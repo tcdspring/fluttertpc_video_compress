@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "video_compress",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+    ]
+  }
+}
