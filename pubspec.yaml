@@ -21,6 +21,8 @@ dependencies:
 flutter:
   plugin:
     platforms:
+      ohos:
+        pluginClass: VideoCompressPlugin
       android:
         package: com.example.video_compress
         pluginClass: VideoCompressPlugin

@@ -1,0 +1,170 @@
+/*
+ * Copyright (c) 2024 Shenzhen Kaihong Digital Industry Development Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { MP4Parser } from '@ohos/mp4parser';
+import { common } from '@kit.AbilityKit';
+import dayjs from 'dayjs';
+import { Log } from '@ohos/flutter_ohos';
+import { TAG } from './Const';
+import fs from '@ohos.file.fs';
+import { image } from '@kit.ImageKit';
+import { Unity } from './Utility';
+
+enum VideoQuality {
+  DefaultQuality,
+  LowQuality,
+  MediumQuality,
+  HighestQuality,
+  Res640x480Quality,
+  Res960x540Quality,
+  Res1280x720Quality,
+  Res1920x1080Quality
+}
+
+export class VideoCompress {
+  context: common.UIAbilityContext;
+
+  constructor(context: common.UIAbilityContext) {
+    this.context = context;
+  }
+
+  deleteAllCache() {
+    fs.listFileSync(this.context.tempDir).forEach(filename => {
+      Log.d(TAG, 'deleteAllCache ' + filename)
+      if (filename.indexOf('VID') === 0 || filename.indexOf('thumbnail_') === 0) {
+        fs.unlinkSync(this.context.tempDir + "/" + filename)
+      }
+    })
+    fs.listFileSync(this.context.cacheDir).forEach(filename => {
+      Log.d(TAG, 'deleteAllCache ' + filename)
+      if (filename.indexOf('VID') === 0) {
+        fs.unlinkSync(this.context.cacheDir + "/" + filename)
+      }
+    })
+    fs.listFileSync(this.context.getApplicationContext().tempDir).forEach(filename => {
+      Log.d(TAG, 'deleteAllCache ' + filename)
+      if (filename.indexOf('VID') === 0) {
+        fs.unlinkSync(this.context.getApplicationContext().tempDir + "/" + filename)
+      }
+    })
+  }
+
+  compress(path: string, quality: number): Promise<string> {
+    let scale = 'scale=-1:1920';
+    switch (quality) {
+      case VideoQuality.DefaultQuality:
+      case VideoQuality.HighestQuality:
+        scale = 'scale=-1:1920';
+        break;
+      case VideoQuality.MediumQuality:
+        scale = 'scale=-1:1080';
+        break;
+      case VideoQuality.LowQuality:
+        scale = 'scale=-1:720';
+        break;
+      case VideoQuality.Res640x480Quality:
+        scale = 'scale=640:480';
+        break;
+      case VideoQuality.Res960x540Quality:
+        scale = 'scale=960:540';
+        break;
+      case VideoQuality.Res1280x720Quality:
+        scale = 'scale=1280:720';
+        break;
+      case VideoQuality.Res1920x1080Quality:
+        scale = 'scale=1920:1080';
+        break;
+      default:
+        scale = 'scale=-1:1920';
+        break;
+    }
+    return new Promise(resolve => {
+      const localDirPath = this.context.tempDir + "/";
+      const sourceMP4 = path;
+      const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+      const destPath: string = localDirPath + "VID_OUT_" + out + ".mp4";
+      const cmd = `ffmpeg -y -i ${sourceMP4} -c:a copy -vf ${scale} ${destPath}`;
+      Log.d(TAG, 'cmd: ' + cmd)
+      // MP4Parser.openNativeLog()
+      MP4Parser.ffmpegCmd(cmd, {
+        callBackResult(code: number) {
+          Log.d(TAG, 'callBackResult: ' + code)
+          resolve(destPath);
+        }
+      });
+    });
+  }
+
+  async getByteThumbnail(path: string, quality: number = 70, position: number = 1) {
+    const outFilePath = await this.getFileThumbnail(path, quality, position);
+    let file = fs.openSync(outFilePath, fs.OpenMode.READ_WRITE);
+    let buf = new ArrayBuffer(fs.statSync(outFilePath).size);
+    fs.readSync(file.fd, buf);
+    return buf;
+  }
+
+  getFileThumbnail(path: string, quality: number = 70, position: number = 1): Promise<string> {
+    return new Promise(resolve => {
+      const sourceMP4 = path;
+      // MP4Parser.openNativeLog()
+      MP4Parser.setDataSource(sourceMP4, {
+        callBackResult: (code: number) => {
+          if (code == 0) {
+            new Unity(this.context).getMediaInfoJsonByAVPlayer(sourceMP4).then(info => {
+              const durationPerFrame = info.duration / info.frame_rate;
+              const start = durationPerFrame * position + "";
+              const end = durationPerFrame * (position + 1) + "";
+              MP4Parser.getFrameAtTimeRang(start, end, MP4Parser.OPTION_CLOSEST, {
+                callBackResult: async (data: ArrayBuffer, timeUs: number) => {
+                  const imageSource = image.createImageSource(data)
+                  const imagePixelMap = await imageSource.createPixelMap()
+                  const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+                  const outPath = this.context.tempDir + "/thumbnail_" + out + ".jpg"
+                  await this.savePixelMap(outPath, imagePixelMap, quality);
+                  resolve(outPath)
+                }
+              });
+            });
+          }
+        }
+      });
+    });
+  }
+
+  // arraybuffer 转PixelMap
+  toPixelMap(buf: ArrayBuffer) {
+    let source = image.createImageSource(buf)
+    return source.createPixelMap()
+  }
+
+  // PixelMap 转ArrayBuffer
+  toArrayBuffer(pixel: PixelMap) {
+    let buf = new ArrayBuffer(pixel.getPixelBytesNumber())
+    pixel.readPixelsToBuffer(buf)
+  }
+
+  async savePixelMap(path: string, pm: PixelMap, quality = 70): Promise<string> {
+    const imagePackerApi: image.ImagePacker = image.createImagePacker();
+    const packOpts: image.PackingOption = { format: 'image/jpeg', quality: quality };
+
+    const data: ArrayBuffer = await imagePackerApi.packing(pm, packOpts);
+    let uri: string = path;
+    let file = fs.openSync(uri, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
+    fs.writeSync(file.fd, data);
+    fs.closeSync(file);
+
+    return uri;
+  }
+}
