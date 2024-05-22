@@ -88,19 +88,53 @@
                 <filteritem type="filename" name="*.iml|*.json|*.txt" desc="desc files"/>
                 <filteritem type="filename" name="*.png|*.ico|*.jpg|*.webp|*.ttf|*.enc|*.mp3" desc="app resource files"/>
                 <filteritem type="filename" name="*.so|*.har" desc="engine二进制文件,不影响兼容性"/>
+                <filteritem type="filename" name="icudtl.dat" desc="ohos字体库文件，不影响兼容性"/>
                 <filteritem type="filename" name="*.tgz" desc="hvigor本地插件,不影响兼容性"/>
                 <filteritem type="filename" name="**.json5" desc="配置文件，flutter插件项目编译时会重写覆盖"/>
+                <filteritem type="filename" name="**.dart" desc="dart原始代码"/>
+                <filteritem type="filename" name="**.md" desc="markdown说明文件"/>
+                <filteritem type="filename" name="hvigorw.bat" desc="hvigorw编译程序，不影响兼容性"/>
+                <filteritem type="filename" name="analysis_options.yaml" desc="flutter自动生成的文件，dart代码分析配置"/>
+                <filteritem type="filename" name="BuildProfile.ets" desc="ohos自动生成的文件，编译配置"/>
+                <filteritem type="filename" name="GeneratedPluginRegistrant.ets" desc="flutter自动生成的文件"/>
+                <filteritem type="filename" name="hvigor-wrapper.js" desc="hvigor编译程序，不影响兼容性"/>
+
                 <filteritem type="filepath" name="*/ohos/har/" desc="hvigor本地插件,不影响兼容性"/>
                 <filteritem type="filepath" name="*/ohos/entry/src/main/resources/rawfile/flutter_assets/" desc="资源文件，不影响兼容性"/>
-                <filteritem type="filepath" name="*/ohos/dta/icudtl.dat" desc="ohos字体库文件，不影响兼容性"/>
-                <filteritem type="filepath" name="*/ohos/hvigor/hvigor-wrapper.js" desc="hvigorw编译程序，不影响兼容性"/>
-                <filteritem type="filepath" name="*/ohos/hvigorw.bat" desc="hvigorw编译程序，不影响兼容性"/>
                 <filteritem type="filepath" name="*/ohos/har/har_product/flutter_embedding.har.profile.10" desc="二进制文件,不影响兼容性"/>
+                <filteritem type="filepath" name="*/android/*" desc="android文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/ios/*" desc="iOS文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/macos/*" desc="macos文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/windows/*" desc="windows文件，不涉及适配"/>
             </filefilter>
             <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
                 <filteritem type="filename" name="**.json5" desc="配置文件，flutter插件项目编译时会重写覆盖"/>
+                <filteritem type="filename" name="**.dart" desc="dart原始代码"/>
+                <filteritem type="filename" name="**.md" desc="markdown说明文件"/>
+                <filteritem type="filename" name="hvigorw.bat" desc="hvigorw编译程序，不影响兼容性"/>
+                <filteritem type="filename" name="analysis_options.yaml" desc="flutter自动生成的文件，dart代码分析配置"/>
+                <filteritem type="filename" name="BuildProfile.ets" desc="ohos自动生成的文件，编译配置"/>
+                <filteritem type="filename" name="GeneratedPluginRegistrant.ets" desc="flutter自动生成的文件"/>
+                <filteritem type="filename" name="hvigor-wrapper.js" desc="hvigor编译程序，不影响兼容性"/>
+
+                <filteritem type="filepath" name="*/android/*" desc="android文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/ios/*" desc="iOS文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/macos/*" desc="macos文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/windows/*" desc="windows文件，不涉及适配"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies">
+                <filteritem type="filename" name="**.dart" desc="dart原始代码"/>
+                <filteritem type="filename" name="**.md" desc="markdown说明文件"/>
+                <filteritem type="filename" name="hvigorw.bat" desc="hvigorw编译程序，不影响兼容性"/>
+                <filteritem type="filename" name="analysis_options.yaml" desc="flutter自动生成的文件，dart代码分析配置"/>
+                <filteritem type="filename" name="BuildProfile.ets" desc="ohos自动生成的文件，编译配置"/>
+                <filteritem type="filename" name="GeneratedPluginRegistrant.ets" desc="flutter自动生成的文件"/>
+                <filteritem type="filename" name="hvigor-wrapper.js" desc="hvigor编译程序，不影响兼容性"/>
+
+                <filteritem type="filepath" name="*/android/*" desc="android文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/ios/*" desc="iOS文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/macos/*" desc="macos文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/windows/*" desc="windows文件，不涉及适配"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="Filters for LICENSE file policies">
             </filefilter>
@@ -110,8 +144,15 @@
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
                 <filteritem type="filename" name="*.iml|*.json|*.txt" desc="desc files"/>
-                <filteritem type='filepath' name="example/ohos/dta/icudtl.dat" desc='二进制文件,不影响兼容性'/>
+                <filteritem type='filename' name="icudtl.dat" desc='ohos字体库文件，不影响兼容性'/>
+
+                <filteritem type="filepath" name="*/android/*" desc="android文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/ios/*" desc="iOS文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/macos/*" desc="macos文件，不涉及适配"/>
+                <filteritem type="filepath" name="*/windows/*" desc="windows文件，不涉及适配"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
 </configuration>
+
+
