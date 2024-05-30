@@ -90,7 +90,7 @@ export class Unity {
         } else if (state === 'prepared') {
           const trackList = await avPlayer.getTrackDescription()
           Log.d(TAG, JSON.stringify(trackList))
-          const videoTrack = trackList.find((track) => (track['track_type'] as string).indexOf('video') > -1)!
+          const videoTrack = trackList.find((track) => track['track_type'] === 1)!
           const r = {
             'track_index': videoTrack['track_index'] as number,
             'track_type': videoTrack['track_type'] as number,
