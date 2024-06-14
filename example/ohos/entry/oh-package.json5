@@ -6,9 +6,9 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "video_compress": "file:../har/video_compress.har",
-    "file_selector_ohos": "file:../har/file_selector_ohos.har",
-    "image_picker_ohos": "file:../har/image_picker_ohos.har",
-    "video_player_ohos": "file:../har/video_player_ohos.har"
+    "video_compress": "file:..\\har\\video_compress.har",
+    "file_selector_ohos": "file:..\\har\\file_selector_ohos.har",
+    "image_picker_ohos": "file:..\\har\\image_picker_ohos.har",
+    "video_player_ohos": "file:..\\har\\video_player_ohos.har"
   }
 }

@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { Log } from '@ohos/flutter_ohos';
 import { TAG } from './Const';
 import fs from '@ohos.file.fs';
+import { media } from '@kit.MediaKit';
 import { image } from '@kit.ImageKit';
 import { Unity } from './Utility';
 
@@ -116,6 +117,40 @@ export class VideoCompress {
   }
 
   getFileThumbnail(path: string, quality: number = 70, position: number = 1): Promise<string> {
+    return new Promise(async resolve => {
+      const sourceMP4 = path;
+      // 创建AVImageGenerator对象
+      let avImageGenerator: media.AVImageGenerator = await media.createAVImageGenerator();
+      avImageGenerator.fdSrc = { fd: fs.openSync(sourceMP4, fs.OpenMode.READ_ONLY).fd };
+      // 初始化入参
+      if (position === -1) {
+        position = 0;
+      }
+      let timeUs = position;
+      let queryOption = media.AVImageQueryOptions.AV_IMAGE_QUERY_NEXT_SYNC;
+      let param: media.PixelMapParams = {
+        width: 300,
+        height: 300
+      };
+      // 获取缩略图（promise模式）
+      const pixelMap = await avImageGenerator.fetchFrameByTime(timeUs, queryOption, param);
+      // 释放资源（promise模式）
+      await avImageGenerator.release();
+      const imagePackerApi = image.createImagePacker();
+
+      const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+      const outPath = this.context.tempDir + "/thumbnail_" + out + ".jpg";
+      const file = fs.openSync(outPath, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
+      const packOpts: image.PackingOption = {
+        format: "image/jpeg",
+        quality: quality,
+      }
+      await imagePackerApi.packToFile(pixelMap, file.fd, packOpts);
+      resolve(outPath);
+    });
+  }
+
+  getFileThumbnailOld(path: string, quality: number = 70, position: number = 1): Promise<string> {
     return new Promise(resolve => {
       const sourceMP4 = path;
       // MP4Parser.openNativeLog()

@@ -1,4 +1,5 @@
 {
+  "modelVersion": "5.0.0",
   "name": "example",
   "version": "1.0.0",
   "description": "Please describe the basic information.",
@@ -12,6 +13,11 @@
     "@ohos/hypium": "1.0.6"
   },
   "overrides": {
-    "@ohos/flutter_ohos": "file:./har/flutter.har"
+    "@ohos/flutter_ohos": "file:./har/flutter.har",
+    "file_selector_ohos": "file:./har/file_selector_ohos.har",
+    "image_picker_ohos": "file:./har/image_picker_ohos.har",
+    "video_player_ohos": "file:./har/video_player_ohos.har",
+    "video_compress": "file:./har/video_compress.har",
+    "@ohos/flutter_module": "file:./entry"
   }
 }

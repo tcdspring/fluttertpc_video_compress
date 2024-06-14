@@ -14,7 +14,7 @@
  */
 
 import { Log } from '@ohos/flutter_ohos';
-import fs from "@ohos.file.fs"
+import fs from '@ohos.file.fs';
 import media from '@ohos.multimedia.media';
 import { common } from '@kit.AbilityKit';
 import { TAG } from './Const';
@@ -68,6 +68,7 @@ export class Unity {
       'height': height,
       'duration': duration,
       'filesize': fileSize,
+      'orientation': '',
     } as Record<string, string | boolean | number>
 
     Log.d(TAG, `get meta data result, ${JSON.stringify(result)}`)
