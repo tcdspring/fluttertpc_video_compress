@@ -68,7 +68,7 @@ export class Unity {
       'height': height,
       'duration': duration,
       'filesize': fileSize,
-      'orientation': '',
+      'orientation': 0,
     } as Record<string, string | boolean | number>
 
     Log.d(TAG, `get meta data result, ${JSON.stringify(result)}`)
