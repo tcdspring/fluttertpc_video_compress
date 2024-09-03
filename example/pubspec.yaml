@@ -14,15 +14,21 @@ dependencies:
   cupertino_icons: ^1.0.4
 #  image_picker: ^0.8.5+3
   image_picker:
-    path: "E:/WORK/flutter_packages/packages/image_picker/image_picker"
+    git:
+      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
+      path: "packages/image_picker/image_picker"
 
-#  video_player: ^2.4.2
-  video_player:
-    path: "E:/WORK/flutter_packages/packages/video_player/video_player"
+#  video_player: ^2.4.2 
+  video_player: 
+    git:
+      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
+      path: "packages/video_player/video_player"
 
 #  file_selector: ^0.8.4+2
   file_selector:
-    path: "E:/WORK/flutter_packages/packages/file_selector/file_selector"
+    git:
+      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
+      path: "packages/file_selector/file_selector"
 
 #  file_selector_macos: ^0.8.2+1
 
