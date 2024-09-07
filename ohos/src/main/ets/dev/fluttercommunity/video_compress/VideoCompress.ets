@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { CompressorResponseCode, CompressQuality, VideoCompressor } from '@ohos/videoCompressor';
 import { MP4Parser } from '@ohos/mp4parser';
 import { common } from '@kit.AbilityKit';
 import dayjs from 'dayjs';
@@ -63,48 +63,39 @@ export class VideoCompress {
   }
 
   compress(path: string, quality: number): Promise<string> {
-    let scale = 'scale=-1:1920';
+    let convertedQuantity = CompressQuality.COMPRESS_QUALITY_MEDIUM;
     switch (quality) {
-      case VideoQuality.DefaultQuality:
-      case VideoQuality.HighestQuality:
-        scale = 'scale=-1:1920';
-        break;
-      case VideoQuality.MediumQuality:
-        scale = 'scale=-1:1080';
-        break;
       case VideoQuality.LowQuality:
-        scale = 'scale=-1:720';
-        break;
       case VideoQuality.Res640x480Quality:
-        scale = 'scale=640:480';
+        convertedQuantity = CompressQuality.COMPRESS_QUALITY_LOW;
         break;
+      case VideoQuality.DefaultQuality:
+      case VideoQuality.MediumQuality:
       case VideoQuality.Res960x540Quality:
-        scale = 'scale=960:540';
-        break;
       case VideoQuality.Res1280x720Quality:
-        scale = 'scale=1280:720';
-        break;
       case VideoQuality.Res1920x1080Quality:
-        scale = 'scale=1920:1080';
+        convertedQuantity = CompressQuality.COMPRESS_QUALITY_MEDIUM;
+        break;
+      case VideoQuality.HighestQuality:
+        convertedQuantity = CompressQuality.COMPRESS_QUALITY_HIGH;
         break;
       default:
-        scale = 'scale=-1:1920';
         break;
     }
+    
     return new Promise(resolve => {
-      const localDirPath = this.context.tempDir + "/";
-      const sourceMP4 = path;
-      const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
-      const destPath: string = localDirPath + "VID_OUT_" + out + ".mp4";
-      const cmd = `ffmpeg -y -i ${sourceMP4} -c:a copy -vf ${scale} ${destPath}`;
-      Log.d(TAG, 'cmd: ' + cmd)
-      // MP4Parser.openNativeLog()
-      MP4Parser.ffmpegCmd(cmd, {
-        callBackResult(code: number) {
-          Log.d(TAG, 'callBackResult: ' + code)
-          resolve(destPath);
-        }
-      });
+      let videoCompressor:VideoCompressor = new VideoCompressor();
+      videoCompressor.compressVideo(getContext(), path, convertedQuantity)
+        .then((data) => {
+          if (data.code == CompressorResponseCode.SUCCESS) {
+            console.log("videoCompressor HIGH message:" + data.message + "--outputPath:" + data.outputPath);
+            resolve(data.outputPath);
+          } else {
+            console.log("videoCompressor HIGH code:" + data.code + "--error message:" + data.message);
+          }
+        }).catch((err: Error) => {
+        console.log("videoCompressor HIGH get error message" + err.message);
+      })
     });
   }
 
