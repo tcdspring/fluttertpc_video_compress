@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "video_compress",
+        "License": "MIT License",
+        "License File": "LICENSE",
+        "Version Number": "fe0a9c58767d2dba72ba2638136c2822b9a95e63",
+        "Owner": "george.lihui@huawei.com",
+        "Upstream URL": "https://github.com/jonataslaw/VideoCompress",
+        "Description": "Light library of video manipulation of Flutter. Compress video, remove audio, get video thumbnail from dart code."
+    }
+]
