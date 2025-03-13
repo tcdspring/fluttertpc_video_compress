@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CompressorResponseCode, CompressQuality, VideoCompressor } from '@ohos/videoCompressor';
 import { MP4Parser } from '@ohos/mp4parser';
 import { common } from '@kit.AbilityKit';
 import dayjs from 'dayjs';
@@ -62,39 +61,61 @@ export class VideoCompress {
     })
   }
 
-  compress(path: string, quality: number): Promise<string> {
-    let convertedQuantity = CompressQuality.COMPRESS_QUALITY_MEDIUM;
+  compress(path: string, quality: number, includeAudio: boolean, frameRate: number, startTime: number,
+    duration: number): Promise<string> {
+
+    const tempDir = getContext().tempDir;
+    const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+    const destPath: string = tempDir + "/VID_COMPRESS" + out + ".mp4";
+
+    let cmd = `ffmpeg -y -noautorotate -accurate_seek -fflags +genpts -ss ${startTime} -i ${path} `;
+
     switch (quality) {
-      case VideoQuality.LowQuality:
-      case VideoQuality.Res640x480Quality:
-        convertedQuantity = CompressQuality.COMPRESS_QUALITY_LOW;
-        break;
       case VideoQuality.DefaultQuality:
+        cmd += `-vf "scale='if(gte(iw/ih,1),640,-1)':'if(lt(iw/ih,1),640,-1)'" `;
+        break;
+      case VideoQuality.LowQuality:
+        cmd += `-vf "scale='if(gte(iw/ih,1),360,-1)':'if(lt(iw/ih,1),360,-1)'" `;
+        break;
       case VideoQuality.MediumQuality:
-      case VideoQuality.Res960x540Quality:
-      case VideoQuality.Res1280x720Quality:
-      case VideoQuality.Res1920x1080Quality:
-        convertedQuantity = CompressQuality.COMPRESS_QUALITY_MEDIUM;
+        cmd += `-vf "scale='if(gte(iw/ih,1),720,-1)':'if(lt(iw/ih,1),720,-1)'" `;
         break;
       case VideoQuality.HighestQuality:
-        convertedQuantity = CompressQuality.COMPRESS_QUALITY_HIGH;
+        let bitrate = 1280 * 720 * 4 / 1000;
+        cmd += `-g 90 -b:v ${bitrate}k `;
         break;
-      default:
+      case VideoQuality.Res640x480Quality:
+        cmd += `-vf "scale='if(gt(iw,ih),min(640,iw),-2)':'if(gt(iw,ih),-2,min(480,ih))'" `;
+        break;
+      case VideoQuality.Res960x540Quality:
+        cmd += `-vf "scale='if(gt(iw,ih),min(960,iw),-2)':'if(gt(iw,ih),-2,min(540,ih))'" `;
+        break;
+      case VideoQuality.Res1280x720Quality:
+        cmd += `-vf "scale='if(gt(iw,ih),min(1280,iw),-2)':'if(gt(iw,ih),-2,min(720,ih))'" `;
+        break;
+      case VideoQuality.Res1920x1080Quality:
+        cmd += `-vf "scale='if(gt(iw,ih),min(1920,iw),-2)':'if(gt(iw,ih),-2,min(1080,ih))'" `;
         break;
     }
-    
+
+    if (!includeAudio) {
+      cmd += `-an `;
+    }
+    cmd += `-r ${frameRate} `;
+    if (duration > 0) {
+      cmd += `-t ${duration} `;
+    }
+    cmd += destPath;
+    Log.d(TAG, cmd);
     return new Promise(resolve => {
-      let videoCompressor:VideoCompressor = new VideoCompressor();
-      videoCompressor.compressVideo(getContext(), path, convertedQuantity)
-        .then((data) => {
-          if (data.code == CompressorResponseCode.SUCCESS) {
-            console.log("videoCompressor HIGH message:" + data.message + "--outputPath:" + data.outputPath);
-            resolve(data.outputPath);
+      MP4Parser.ffmpegCmd(cmd, {
+        callBackResult: (code: number) => {
+          if (code === 0) {
+            resolve(destPath);
           } else {
-            console.log("videoCompressor HIGH code:" + data.code + "--error message:" + data.message);
+            resolve("");
           }
-        }).catch((err: Error) => {
-        console.log("videoCompressor HIGH get error message" + err.message);
+        }
       })
     });
   }
