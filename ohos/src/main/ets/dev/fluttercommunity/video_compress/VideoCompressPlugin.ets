@@ -23,7 +23,6 @@ import {
   MethodChannel,
   MethodResult
 } from '@ohos/flutter_ohos';
-import dayjs from 'dayjs';
 import fs from '@ohos.file.fs';
 
 import bundleManager from '@ohos.bundle.bundleManager';
@@ -48,24 +47,6 @@ enum VideoQuality {
   Res1280x720Quality = 6,
   Res1920x1080Quality = 7
 }
-
-// function qualityAdaptor(q: VideoQuality): CompressQuality {
-//   switch (q) {
-//     case VideoQuality.DefaultQuality:
-//     case VideoQuality.HighestQuality:
-//     case VideoQuality.Res1920x1080Quality:
-//     case VideoQuality.Res1280x720Quality:
-//     case VideoQuality.Res960x540Quality:
-//       return CompressQuality.COMPRESS_QUALITY_HIGH;
-//     case VideoQuality.MediumQuality:
-//     case VideoQuality.Res640x480Quality:
-//       return CompressQuality.COMPRESS_QUALITY_MEDIUM;
-//     case VideoQuality.LowQuality:
-//       return CompressQuality.COMPRESS_QUALITY_LOW;
-//     default:
-//       return CompressQuality.COMPRESS_QUALITY_HIGH
-//   }
-// }
 
 export class VideoCompressPlugin implements FlutterPlugin, MethodCallHandler, AbilityAware {
   getUniqueClassName(): string {
@@ -148,36 +129,31 @@ export class VideoCompressPlugin implements FlutterPlugin, MethodCallHandler, Ab
           const path = call.argument("path") as string;
           const quality = call.argument("quality") as number;
           const deleteOrigin = call.argument("deleteOrigin") as boolean;
-          const startTime = call.argument("startTime") as number;
-          const duration = call.argument("duration") as number;
 
-          Log.d(TAG, JSON.stringify({
-            path,
-            quality,
-            deleteOrigin,
-            startTime,
-            duration
-          }))
           Log.d(TAG, path)
 
-          let includeAudio = call.argument("includeAudio") as boolean | undefined;
-          if (includeAudio === undefined) {
+          let includeAudio = call.argument("includeAudio") as boolean | null;
+          if (includeAudio === null) {
             includeAudio = true;
           }
 
-          let frameRate = call.argument("frameRate") as number | undefined;
-          if (frameRate === undefined) {
+          let frameRate = call.argument("frameRate") as number | null;
+          if (frameRate === null) {
             frameRate = 30;
           }
 
-          const tempDir = this.applicationContext!.tempDir;
-          const out: string = dayjs().format('YYYY-MM-DD HH-mm-ss');
-          const destPath: string = tempDir + "/VID_" + out + ".mp4";
+          let startTime = call.argument("startTime") as number | null;
+          if (startTime === null) {
+            startTime = 0;
+          }
 
-          Log.d(TAG, destPath)
+          let duration = call.argument("duration") as number | null;
+          if (duration === null) {
+            duration = -1;
+          }
 
           this.methodChannel?.invokeMethod("updateProgress", 1)
-          this.videoCompress?.compress(path, quality).then(out => {
+          this.videoCompress?.compress(path, quality, includeAudio, frameRate, startTime, duration).then(out => {
             if (deleteOrigin) {
               fs.unlinkSync(path);
             }
