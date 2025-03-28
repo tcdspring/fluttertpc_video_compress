@@ -109,7 +109,7 @@ export class VideoCompressPlugin implements FlutterPlugin, MethodCallHandler, Ab
         case 'getMediaInfo':
           const path = call.argument("path") as string
           this.unity?.getMediaInfoJson(path).then(r => {
-            result.success(r);
+            result.success(JSON.stringify(r));
           });
           break;
         case 'deleteAllCache': {
