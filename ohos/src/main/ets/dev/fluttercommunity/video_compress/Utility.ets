@@ -59,6 +59,7 @@ export class Unity {
     const duration = metadata.duration ? Number(metadata.duration) : 0;
     const width = metadata.videoWidth ? Number(metadata.videoWidth) : 0;
     const height = metadata.videoHeight ? Number(metadata.videoHeight) : 0;
+    const videoOrientation = metadata.videoOrientation ? Number(metadata.videoOrientation) : 0;
 
     const result = {
       'path': path,
@@ -68,7 +69,7 @@ export class Unity {
       'height': height,
       'duration': duration,
       'filesize': fileSize,
-      'orientation': 0,
+      'orientation': videoOrientation,
     } as Record<string, string | boolean | number>
 
     Log.d(TAG, `get meta data result, ${JSON.stringify(result)}`)
