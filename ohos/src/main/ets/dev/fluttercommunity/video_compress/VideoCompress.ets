@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MP4Parser } from '@ohos/mp4parser';
+import FFmpegNapi from 'libvideocompress.so';
 import { common } from '@kit.AbilityKit';
 import dayjs from 'dayjs';
 import { Log } from '@ohos/flutter_ohos';
@@ -68,7 +68,7 @@ export class VideoCompress {
     const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const destPath: string = tempDir + "/VID_COMPRESS" + out + ".mp4";
 
-    let cmd = `ffmpeg -y -noautorotate -accurate_seek -fflags +genpts -ss ${startTime} -i ${path} `;
+    let cmd = `-y -noautorotate -accurate_seek -fflags +genpts -ss ${startTime} -i ${path} `;
 
     switch (quality) {
       case VideoQuality.DefaultQuality:
@@ -108,14 +108,12 @@ export class VideoCompress {
     cmd += destPath;
     Log.d(TAG, cmd);
     return new Promise(resolve => {
-      MP4Parser.ffmpegCmd(cmd, {
-        callBackResult: (code: number) => {
+      FFmpegNapi.executeFFmpeg(cmd).then((code: number) => {
           if (code === 0) {
             resolve(destPath);
           } else {
             resolve("");
           }
-        }
       })
     });
   }
@@ -130,63 +128,18 @@ export class VideoCompress {
 
   getFileThumbnail(path: string, quality: number = 70, position: number = 1): Promise<string> {
     return new Promise(async resolve => {
-      const sourceMP4 = path;
-      // 创建AVImageGenerator对象
-      let avImageGenerator: media.AVImageGenerator = await media.createAVImageGenerator();
-      avImageGenerator.fdSrc = { fd: fs.openSync(sourceMP4, fs.OpenMode.READ_ONLY).fd };
-      // 初始化入参
-      if (position === -1) {
-        position = 0;
-      }
-      let timeUs = position;
-      let queryOption = media.AVImageQueryOptions.AV_IMAGE_QUERY_NEXT_SYNC;
-      let param: media.PixelMapParams = {
-        width: 300,
-        height: 300
-      };
-      // 获取缩略图（promise模式）
-      const pixelMap = await avImageGenerator.fetchFrameByTime(timeUs, queryOption, param);
-      // 释放资源（promise模式）
-      await avImageGenerator.release();
-      const imagePackerApi = image.createImagePacker();
-
       const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
       const outPath = this.context.tempDir + "/thumbnail_" + out + ".jpg";
-      const file = fs.openSync(outPath, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
-      const packOpts: image.PackingOption = {
-        format: "image/jpeg",
-        quality: quality,
-      }
-      await imagePackerApi.packToFile(pixelMap, file.fd, packOpts);
-      resolve(outPath);
-    });
-  }
-
-  getFileThumbnailOld(path: string, quality: number = 70, position: number = 1): Promise<string> {
-    return new Promise(resolve => {
-      const sourceMP4 = path;
-      // MP4Parser.openNativeLog()
-      MP4Parser.setDataSource(sourceMP4, {
-        callBackResult: (code: number) => {
-          if (code == 0) {
-            new Unity(this.context).getMediaInfoJsonByAVPlayer(sourceMP4).then(info => {
-              const durationPerFrame = info.duration / info.frame_rate;
-              const start = durationPerFrame * position + "";
-              const end = durationPerFrame * (position + 1) + "";
-              MP4Parser.getFrameAtTimeRang(start, end, MP4Parser.OPTION_CLOSEST, {
-                callBackResult: async (data: ArrayBuffer, timeUs: number) => {
-                  const imageSource = image.createImageSource(data)
-                  const imagePixelMap = await imageSource.createPixelMap()
-                  const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
-                  const outPath = this.context.tempDir + "/thumbnail_" + out + ".jpg"
-                  await this.savePixelMap(outPath, imagePixelMap, quality);
-                  resolve(outPath)
-                }
-              });
-            });
-          }
+      quality = 31 - 29 * quality / 100;
+      position = position * 1.000 / 1000;
+      let cmd = `-i ${path} -ss ${position} -vframes 1 -q:v ${quality} -vf "scale='if(gt(iw,ih),min(512,iw),-2)':'if(gt(iw,ih),-2,min(512,ih))'" ${outPath}`;
+      FFmpegNapi.executeFFmpeg(cmd).then((code: number) => {
+        if (code === 0) {
+          resolve(outPath);
+        } else {
+          resolve("");
         }
-      });
+      })
     });
   }
 

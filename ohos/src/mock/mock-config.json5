@@ -1,0 +1,5 @@
+{
+  "libentry.so": {
+    "source": "src/mock/Libvideocompress.mock.ets"
+  }
+}

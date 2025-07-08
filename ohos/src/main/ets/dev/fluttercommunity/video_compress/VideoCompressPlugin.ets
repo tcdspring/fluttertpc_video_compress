@@ -93,7 +93,7 @@ export class VideoCompressPlugin implements FlutterPlugin, MethodCallHandler, Ab
           const quality = call.argument("quality") as number
           const position = call.argument("position") as number
           this.videoCompress?.getByteThumbnail(path, quality, position).then(data => {
-            result.success(data)
+            result.success(new Uint8Array(data))
           })
           break;
         }

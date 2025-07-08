@@ -46,7 +46,6 @@ flutter pub get
 在以下版本中已测试通过
 
 1. Flutter: 3.7.12-ohos-1.0.6; SDK: 5.0.0(12); IDE: DevEco Studio: 5.0.13.200; ROM: 5.1.0.120 SP3;
-2. Flutter: 3.22.1-ohos-1.0.1; SDK: 5.0.0(12); IDE: DevEco Studio: 5.0.13.200; ROM: 5.1.0.120 SP3;
 
 
 ## 3. API
@@ -90,8 +89,9 @@ flutter pub get
 
 ## 6. 其他
 
+1. [FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip)
+2. [ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2)
 
 ## 7. 开源协议
-
 
 本项目基于 [MIT License](/LICENSE) ，请自由地享受和参与开源。
