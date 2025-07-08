@@ -8,7 +8,7 @@
   "dependencies": {
     "@ohos/flutter_ohos": "file:./libs/flutter_embedding.har",
     "dayjs": "^1.11.7",
-    "@ohos/mp4parser": "2.0.5",
+    "libvideocompress.so": "file:./src/main/cpp/types/libvideocompress"
   },
   "devDependencies": {},
   "dynamicDependencies": {}

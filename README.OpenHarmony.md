@@ -46,7 +46,6 @@ For use cases [example](/example/lib/main.dart)
 This document is verified based on the following versions:
 
 1. Flutter: 3.7.12-ohos-1.0.6; SDK: 5.0.0(12); IDE: DevEco Studio: 5.0.13.200; ROM: 5.1.0.120 SP3;
-2. Flutter: 3.22.1-ohos-1.0.1; SDK: 5.0.0(12); IDE: DevEco Studio: 5.0.13.200; ROM: 5.1.0.120 SP3;
 
 
 ## 3. API
@@ -90,6 +89,8 @@ This document is verified based on the following versions:
 
 ## 6. Others
 
+1. [FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip)
+2. [ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2)
 
 ## 7. License
 
