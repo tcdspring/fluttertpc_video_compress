@@ -85,12 +85,13 @@ flutter pub get
 
 ## 5. 遗留问题
 
-- [ ]  ohos 端视频裁剪失败，返回缩略图byte文件类型错误: [issue#25](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/issues/25)
+- [x]  ohos 端视频裁剪失败，返回缩略图byte文件类型错误: [issue#25](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/issues/25)
 
 ## 6. 其他
 
 1. [FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip)
 2. [ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2)
+3. [pr20](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/pull/20)提交更换了底层实现视频裁剪的功能，采用[FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip)和[ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2)，相比之前的mp4parser拥有更完成的功能，如果遇到裁剪后的视频无法播放，可以在issue中提出，也可以自行根据[tpc_c_cplusplus](https://gitcode.com/openharmony-sig/tpc_c_cplusplus)进行功能的拓展
 
 ## 7. 开源协议
 

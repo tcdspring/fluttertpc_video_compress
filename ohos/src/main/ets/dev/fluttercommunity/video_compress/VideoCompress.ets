@@ -72,13 +72,13 @@ export class VideoCompress {
 
     switch (quality) {
       case VideoQuality.DefaultQuality:
-        cmd += `-vf "scale='if(gte(iw/ih,1),640,-1)':'if(lt(iw/ih,1),640,-1)'" `;
+        cmd += `-vf "scale='if(gte(iw/ih,1),640,-2)':'if(lt(iw/ih,1),640,-2)'" `;
         break;
       case VideoQuality.LowQuality:
-        cmd += `-vf "scale='if(gte(iw/ih,1),360,-1)':'if(lt(iw/ih,1),360,-1)'" `;
+        cmd += `-vf "scale='if(gte(iw/ih,1),360,-2)':'if(lt(iw/ih,1),360,-2)'" `;
         break;
       case VideoQuality.MediumQuality:
-        cmd += `-vf "scale='if(gte(iw/ih,1),720,-1)':'if(lt(iw/ih,1),720,-1)'" `;
+        cmd += `-vf "scale='if(gte(iw/ih,1),720,-2)':'if(lt(iw/ih,1),720,-2)'" `;
         break;
       case VideoQuality.HighestQuality:
         let bitrate = 1280 * 720 * 4 / 1000;
