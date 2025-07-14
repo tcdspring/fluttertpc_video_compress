@@ -85,13 +85,13 @@ This document is verified based on the following versions:
 
 ## 5. Known Issues
 
-- [ ] ohos video cropping failed, and the returned thumbnail byte file type is incorrect:[issue#25](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/issues/25).
+1. [x] ohos video cropping failed, and the returned thumbnail byte file type is incorrect:[issue#25](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/issues/25).
 
 ## 6. Others
 
 1. [FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip)
 2. [ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2)
-
+3. [pr20](https://gitcode.com/openharmony-sig/fluttertpc_video_compress/pull/20) submitted a new feature to replace the underlying implementation of video cropping. It uses [FFmpeg](https://gitee.com/openharmony-tpc-incubate/FFmpeg/repository/blazearchive/n6.1.2.zip) and [ffmpeg-kit](https://codeload.github.com/arthenica/ffmpeg-kit/zip/refs/tags/react.native.v6.0.2). Compared with the previous mp4parser, it has more complete functions. If the cropped video cannot be played, you can raise it in the issue, or expand the function according to [tpc_c_cplusplus](https://gitcode.com/openharmony-sig/tpc_c_cplusplus)
 ## 7. License
 
 This project is licensed under [MIT License](/LICENSE).

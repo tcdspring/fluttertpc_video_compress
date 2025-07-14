@@ -36,6 +36,7 @@ target_link_libraries(videocompress PUBLIC ${THIRD_PARTY_DIR}/FFmpeg/${OHOS_ARCH
 target_link_libraries(videocompress PUBLIC ${THIRD_PARTY_DIR}/FFmpeg/${OHOS_ARCH}/lib/libswscale.so.7)
 
 target_link_libraries(videocompress PUBLIC ${THIRD_PARTY_DIR}/ffmpeg-kit/${OHOS_ARCH}/lib/libffmpegkit.a)
+target_link_libraries(videocompress PUBLIC ${THIRD_PARTY_DIR}/x264/${OHOS_ARCH}/lib/libx264.so.164)
 
 
 target_link_libraries(videocompress PUBLIC libace_napi.z.so)
