@@ -105,7 +105,7 @@ export class VideoCompress {
     if (duration > 0) {
       cmd += `-t ${duration} `;
     }
-    cmd += destPath;
+    cmd += `-pix_fmt yuv420p -c:a aac ${destPath}`;
     Log.d(TAG, cmd);
     return new Promise(resolve => {
       FFmpegNapi.executeFFmpeg(cmd).then((code: number) => {
