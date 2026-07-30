@@ -17,7 +17,7 @@ import com.otaliastudios.transcoder.internal.Logger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
+// [3.35 patch] import io.flutter.plugin.common.PluginRegistry.Registrar  // v1 已移除
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -199,11 +199,12 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
     companion object {
         private const val TAG = "video_compress"
 
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            val instance = VideoCompressPlugin()
-            instance.init(registrar.context(), registrar.messenger())
-        }
+        // [3.35 patch] v1 registerWith 移除（Flutter 3.35 已删 PluginRegistry.Registrar），走 v2 onAttachedToEngine
+        // @JvmStatic
+        // fun registerWith(registrar: Registrar) {
+        //     val instance = VideoCompressPlugin()
+        //     instance.init(registrar.context(), registrar.messenger())
+        // }
     }
 
 }
