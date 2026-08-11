@@ -22,6 +22,10 @@ import { media } from '@kit.MediaKit';
 import { image } from '@kit.ImageKit';
 import { Unity } from './Utility';
 
+// 缩略图输出文件名的自增序号，保证同秒内多次 getFileThumbnail 的输出文件名唯一，
+// 避免 ffmpeg 因输出文件已存在（且未加 -y）而失败返回空路径，导致多视频导入整批失败。
+let thumbnailSeq: number = 0;
+
 enum VideoQuality {
   DefaultQuality,
   LowQuality,
@@ -128,11 +132,12 @@ export class VideoCompress {
 
   getFileThumbnail(path: string, quality: number = 70, position: number = 1): Promise<string> {
     return new Promise(async resolve => {
-      const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss');
+      thumbnailSeq = thumbnailSeq + 1;
+      const out: string = dayjs().format('YYYY-MM-DD_HH-mm-ss') + '_' + thumbnailSeq;
       const outPath = this.context.tempDir + "/thumbnail_" + out + ".jpg";
       quality = 31 - 29 * quality / 100;
       position = position * 1.000 / 1000;
-      let cmd = `-i ${path} -ss ${position} -vframes 1 -q:v ${quality} -vf "scale='if(gt(iw,ih),min(512,iw),-2)':'if(gt(iw,ih),-2,min(512,ih))'" ${outPath}`;
+      let cmd = `-y -i ${path} -ss ${position} -vframes 1 -q:v ${quality} -vf "scale='if(gt(iw,ih),min(512,iw),-2)':'if(gt(iw,ih),-2,min(512,ih))'" ${outPath}`;
       FFmpegNapi.executeFFmpeg(cmd).then((code: number) => {
         if (code === 0) {
           resolve(outPath);
