@@ -83,9 +83,22 @@ extension Compress on IVideoCompress {
       'position': position,
     }));
 
-    final file = File(Uri.decodeFull(filePath!));
+    final file = File(_percentSafeDecode(filePath!));
 
     return file;
+  }
+
+  /// 原生侧返回的缩略图路径可能包含原始文件名；文件名里的裸 '%'（如
+  /// "50%折扣.mp4"）会让 Uri.decodeFull 抛 "Illegal percent encoding"，
+  /// 导致导入视频生成缩略图必崩（线上 Crash 20260906090628746）。
+  /// 先把不构成 %XX 转义的 '%' 规范成 %25 再解码：合法转义照常还原，
+  /// 字面 '%' 原样保留。
+  static String _percentSafeDecode(String s) {
+    final normalized = s.replaceAllMapped(
+      RegExp('%(?![0-9A-Fa-f]{2})'),
+      (m) => '%25',
+    );
+    return Uri.decodeFull(normalized);
   }
 
   /// get media information from [path]
