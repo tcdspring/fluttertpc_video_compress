@@ -3,7 +3,6 @@ package com.example.video_compress
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.os.Build
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -35,7 +34,10 @@ class Utility(private val channelName: String) {
         val file = File(path)
         val retriever = MediaMetadataRetriever()
 
-        retriever.setDataSource(context, Uri.fromFile(file))
+        // 本地路径直接用 String 重载：Uri 重载经 ContentResolver 会按
+        // 百分号解码路径，文件名含裸 '%' 时（如"50%折扣.mp4"）为非法
+        // 编码，setDataSource 抛异常导致导入被跳过。
+        retriever.setDataSource(path)
 
         val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: ""
