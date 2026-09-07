@@ -83,22 +83,14 @@ extension Compress on IVideoCompress {
       'position': position,
     }));
 
-    final file = File(_percentSafeDecode(filePath!));
+    // Android/OHOS 原生侧返回的都是裸文件系统路径（file.absolutePath /
+    // ffmpeg 输出路径），不做任何 URI 解码：上游的 Uri.decodeFull 是
+    // 错误行为——裸 '%' 抛 Illegal percent encoding（线上崩溃
+    /// 20260906090628746），且 "%50" 这类恰好合法的十六进制会被错误
+    /// 还原成字符（如 'P'）导致路径错乱。
+    final file = File(filePath!);
 
     return file;
-  }
-
-  /// 原生侧返回的缩略图路径可能包含原始文件名；文件名里的裸 '%'（如
-  /// "50%折扣.mp4"）会让 Uri.decodeFull 抛 "Illegal percent encoding"，
-  /// 导致导入视频生成缩略图必崩（线上 Crash 20260906090628746）。
-  /// 先把不构成 %XX 转义的 '%' 规范成 %25 再解码：合法转义照常还原，
-  /// 字面 '%' 原样保留。
-  static String _percentSafeDecode(String s) {
-    final normalized = s.replaceAllMapped(
-      RegExp('%(?![0-9A-Fa-f]{2})'),
-      (m) => '%25',
-    );
-    return Uri.decodeFull(normalized);
   }
 
   /// get media information from [path]
