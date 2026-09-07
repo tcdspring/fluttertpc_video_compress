@@ -35,17 +35,11 @@ extension Compress on IVideoCompress {
   }
 
   Future<T?> _invoke<T>(String name, [Map<String, dynamic>? params]) async {
-    T? result;
-    try {
-      result = params != null
-          ? await channel.invokeMethod(name, params)
-          : await channel.invokeMethod(name);
-    } on PlatformException catch (e) {
-      debugPrint('''Error from VideoCompress: 
-      Method: $name
-      $e''');
-    }
-    return result;
+    // 上游在此吞掉 PlatformException 并返回 null，导致调用方
+    // json.decode(jsonStr!) 抛空断言、真实错误被掩盖。改为透传异常。
+    return params != null
+        ? await channel.invokeMethod(name, params)
+        : await channel.invokeMethod(name);
   }
 
   /// getByteThumbnail return [Future<Uint8List>],
